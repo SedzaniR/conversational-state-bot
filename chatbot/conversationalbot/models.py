@@ -33,6 +33,7 @@ class Step(models.Model):
     
 
 class Log(models.Model):
+    thread_id = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_input = models.CharField(max_length=100)
     bot_response = models.CharField(max_length=100)
