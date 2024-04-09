@@ -1,0 +1,6 @@
+Django==4.0.8
+djangorestframework==3.15.1
+django-redis==5.2.0
+openai==1.16.2
+Ipython
+django-compressor==4.4

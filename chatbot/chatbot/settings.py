@@ -38,7 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'conversationalbot.apps.ConversationalbotConfig',
-     'compressor',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
