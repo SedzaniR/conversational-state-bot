@@ -9,7 +9,7 @@ from conversationalbot.utils import hugging_face_zero_shot_free
 from django.contrib.auth.models import User
 class UserChatApiView(APIView):
     
-    #permission_classes = [permissions.IsAuthenticated] come later
+    permission_classes = [permissions.IsAuthenticated]
     
     #1. Get user sessions/logs
     def get(self,request,*args, **kwargs):
@@ -56,13 +56,7 @@ class UserChatApiView(APIView):
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
-        #
-        print('serializer errors', serializer.errors)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-def set_state(request,user:User, state):
-    user_info = UserMeta.objects.get(user=request.user)
-    user_info.assistant_id = None
-    user_info.thread_id = None
-    user_info.save()
     
