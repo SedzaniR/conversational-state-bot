@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 STATE = (
     ('greeting', 'greeting'),
@@ -21,28 +22,28 @@ class UserMeta(models.Model):
 
 
 class Step(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    step = models.CharField(max_length=8, choices=STATE, default='greeting')
-
-    def __str__(self):
-        return self.step
-    
-    def transition_to_question(self):
-        #TO DO: Add logic to transition to question
-        self.step = 'question'
-        self.save()
-    
-    def transition_to_end(self):
-        #TO DO: Add logic to transition to end
-        self.step = 'end'
-        self.save()
+    user_meta = models.ForeignKey(UserMeta, on_delete=models.CASCADE, null=True, blank=True)
+  
+    def transition_state(self,classification):
+        self.user_meta.state = classification
+        self.user_meta.save()
+ 
     
 
 class Log(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_input = models.TextField()
     bot_response = models.TextField()
+    state = models.CharField(max_length=100,choices=STATE, default='greeting', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user_input
+
+@receiver(post_save, sender=Log)
+def update_state(sender, instance, created, **kwargs):
+    print('post save signal')
+    print('this should be thetransition state', instance.state)
+    user = UserMeta.objects.get(user=instance.user)
+    user_step, created  = Step.objects.get_or_create(user_meta=user)
+    user_step.transition_state(instance.state)

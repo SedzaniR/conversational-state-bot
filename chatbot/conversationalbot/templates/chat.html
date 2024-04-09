@@ -85,7 +85,7 @@ document.getElementById('send-message').addEventListener('click', function() {
          .then(function (response) {
              console.log('response', response.data);
              user_response = response.data.bot_response;  
-             chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response + '</div>';
+             chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response.replace(/\n/g, '<br>')+ '</div>';
              
          })
          .catch(function (error) {
