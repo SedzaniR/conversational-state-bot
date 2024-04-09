@@ -1,0 +1,72 @@
+{% load static %}
+ <style>
+
+
+      .chat-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 50%; /* Sets the container width to half of the screen width */
+        height: 50%; /* Sets the container height to half of the viewport height */
+      }
+      
+   
+      
+ </style>
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content=
+        "width=device-width, initial-scale=1.0">
+    <title>Let's Converse</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  
+
+</head>
+ 
+<body >
+ 
+
+<div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
+   
+    <div class="relative bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 w-1/2 h-1/2 mx-auto ">
+      <div class="">
+      
+        <div class="">
+          <div class="space-y-6 py-8 text-base leading-7 text-gray-600">
+      
+              <form method="POST" class="max-w-md mx-auto" action="{% url 'conversationalbot:user_login' %}">
+               
+                  {% csrf_token %}
+          
+                  <div class="mb-4">
+                      <label for="username" class="block font-medium">Username</label>
+                      <input type="tel" name="username" class="form-input mt-1 block w-full" id="username" placeholder="Username">
+                  </div>
+                  <div class="mb-4">
+                      <label for="password" class="block font-medium">Password</label>
+                      <input type="password" name="password" class="form-input mt-1 block w-full" id="password" placeholder="Password">
+                  </div>
+          
+                  {% comment %} <p class="mb-4"><a href="{% url "conversationalbot:forgot_password" %}" class="text-blue-500 hover:underline">Forgot password?</a></p>
+           {% endcomment %}
+                  <button type="submit" class="btn btn-primary w-full">Login</button>
+                {% comment %}   <div class="text-center mt-2"><a href="{% url "conversationalbot:register" %}" class="text-blue-500 hover:underline">Don't have an account? <u>Sign up here</u></a></div>
+               {% endcomment %}
+    
+              </form>
+          </div>
+        
+        </div>
+      </div>
+    </div>
+  
+</div>
+
+
+</body>
+ 
+</html>

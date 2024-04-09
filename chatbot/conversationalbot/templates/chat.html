@@ -1,4 +1,3 @@
-{% load compress %}
 {% load static %}
  <style>
 
@@ -37,11 +36,14 @@
       <div class="">
       
         <div class="">
-          <div class="space-y-6 py-8 text-base leading-7 text-gray-600">
-            
+          <div class="space-y-6 py-8 text-base leading-7 text-gray-600 chat-content">
+            {% for message in user_logs %}
+                <div class="text-right text-gray-900">{{ message.user_input|linebreaksbr }}</div>
+                <div class="text-left text-teal-500">{{ message.bot_response|linebreaksbr }}</div>
+            {% endfor %}
           </div>
           <div class="sticky-text-field mb-0 flex items-center  py-2">
-            <input class="border rounded-l-lg p-2 w-full" placeholder="Send Message">
+            <input class="border rounded-l-lg p-2 w-full" placeholder="Send Message" id="message-input">
             <div class="bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer ml-1" id='send-message'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
@@ -55,6 +57,45 @@
 </div>
 
 
+
 </body>
  
 </html>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script>
+
+  
+
+document.getElementById('send-message').addEventListener('click', function() {
+    try{
+
+    console.log('clicked')
+    var messageTag = document.getElementById('message-input')
+    var message = messageTag.value;
+    var url = 'http://127.0.0.1:8000/conversationalbot/chat/'; 
+    
+    // Make an Axios POST request
+    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+    axios.defaults.xsrfCookieName = 'csrftoken';
+
+    var chatContent = document.querySelector('.chat-content');
+    chatContent.innerHTML += '<div class="text-right text-gray-900">' + message + '</div>';
+    messageTag.value = '';
+    axios.post(url, { message: message })
+         .then(function (response) {
+             console.log('response', response.data);
+             user_response = response.data.bot_response;  
+             chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response + '</div>';
+             
+         })
+         .catch(function (error) {
+             console.error('Error sending message:', error);
+             // Handle error scenario here
+         });
+        }catch(e){
+            console.log(e)
+        }
+});
+
+
+</script>

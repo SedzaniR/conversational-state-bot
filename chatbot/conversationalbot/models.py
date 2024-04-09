@@ -1,22 +1,28 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 
-class User(models.Model):
-    username = models.CharField(max_length=100)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.username
-
-STEPS = (
+STATE = (
     ('greeting', 'greeting'),
     ('question', 'question'),
     ('end', 'end')
 )
+class UserMeta(models.Model):
+    user = models.ForeignKey(User, on_delete = models.CASCADE)
+    state = models.CharField(max_length=100,choices=STATE, default='greeting', null=True)
+    thread_id = models.CharField(max_length=100, null=True, blank=True)
+    assistant_id = models.CharField(max_length=100, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+
+    def __str__(self):
+        return self.user
+
+
 class Step(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    step = models.CharField(max_length=8, choices=STEPS, default='greeting')
+    step = models.CharField(max_length=8, choices=STATE, default='greeting')
 
     def __str__(self):
         return self.step
@@ -33,10 +39,9 @@ class Step(models.Model):
     
 
 class Log(models.Model):
-    thread_id = models.CharField(max_length=100)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    user_input = models.CharField(max_length=100)
-    bot_response = models.CharField(max_length=100)
+    user_input = models.TextField()
+    bot_response = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
