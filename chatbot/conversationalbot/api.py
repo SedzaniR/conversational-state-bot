@@ -7,12 +7,23 @@ from .serializers import LogSerializer
 from .assistant import ConversationAssistant
 from conversationalbot.utils import hugging_face_zero_shot_free
 from django.contrib.auth.models import User
+from rest_framework.authentication import SessionAuthentication, BasicAuthentication
 class UserChatApiView(APIView):
     
     permission_classes = [permissions.IsAuthenticated]
+    authentication_classes = [SessionAuthentication, BasicAuthentication]
+    #1.get all the user logs
+    def get(self,request,*args, **kwargs):
+        
+        """
+        Get all the user logs
+        """
+        print('this is the user', request.user.id)
+        todos = Log.objects.filter(user = request.user.id)
+        serializer = LogSerializer(todos, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
     
-    
-    #1. create a new session or continue previous sessison
+    #2. create a new session or continue previous sessison
     
     def post(self,request, *args, **kwargs):
         """
@@ -44,6 +55,7 @@ class UserChatApiView(APIView):
         serializer = LogSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            
             
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         
