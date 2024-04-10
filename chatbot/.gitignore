@@ -3,3 +3,4 @@ __pycache__/
 db.sqlite3
 pyvenv.cfg
 node_modules
+.env
