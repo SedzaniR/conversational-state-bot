@@ -19,7 +19,7 @@ class ConversationAssistant:
         
         assistant = self.client.beta.assistants.create(
             name="The Conversationalist",
-            instructions="You are a general conversationalist.Use your knowledge base to best respond to customer queries.",
+            instructions="You are a general conversationalist.Use your knowledge base to converse with the user.",
             tools=[{"type": "retrieval"}],
             model="gpt-3.5-turbo",
             )

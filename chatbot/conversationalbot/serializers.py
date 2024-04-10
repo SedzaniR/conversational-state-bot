@@ -6,4 +6,4 @@ class LogSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Log
-        fields = ["user","user_input","bot_response"]
+        fields = ["user","user_input","bot_response","state"]

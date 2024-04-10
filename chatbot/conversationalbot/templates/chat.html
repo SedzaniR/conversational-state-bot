@@ -2,14 +2,28 @@
  <style>
 
 
-      .chat-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 50%; /* Sets the container width to half of the screen width */
-        height: 50%; /* Sets the container height to half of the viewport height */
-      }
-      
+  .chat-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50%; /* Sets the container width to half of the screen width */
+    height: 50%; /* Sets the container height to half of the viewport height */
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.spinner {
+    border: 4px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #333;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+}
+ 
    
       
  </style>
@@ -42,13 +56,16 @@
                 <div class="text-left text-teal-500">{{ message.bot_response|linebreaksbr }}</div>
             {% endfor %}
           </div>
-          <div class="sticky-text-field mb-0 flex items-center  py-2">
+          <div class="sticky-text-field mb-0 flex items-center user-section py-2">
             <input class="border rounded-l-lg p-2 w-full" placeholder="Send Message" id="message-input">
+           
             <div class="bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer ml-1" id='send-message'>
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
                 </svg>
             </div>
+          
+            
         </div>
         </div>
       </div>
@@ -63,39 +80,36 @@
 </html>
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-
+  document.getElementById('send-message').addEventListener('click', function() {
+      try {
+          var messageTag = document.getElementById('message-input');
+          var message = messageTag.value;
+          var url = 'http://127.0.0.1:8000/conversationalbot/chat/'; 
+          
+   
+          axios.defaults.xsrfHeaderName = 'X-CSRFToken';
+          axios.defaults.xsrfCookieName = 'csrftoken';
   
-
-document.getElementById('send-message').addEventListener('click', function() {
-    try{
-
-    console.log('clicked')
-    var messageTag = document.getElementById('message-input')
-    var message = messageTag.value;
-    var url = 'http://127.0.0.1:8000/conversationalbot/chat/'; 
-    
-    // Make an Axios POST request
-    axios.defaults.xsrfHeaderName = 'X-CSRFToken';
-    axios.defaults.xsrfCookieName = 'csrftoken';
-
-    var chatContent = document.querySelector('.chat-content');
-    chatContent.innerHTML += '<div class="text-right text-gray-900">' + message + '</div>';
-    messageTag.value = '';
-    axios.post(url, { message: message })
-         .then(function (response) {
-             console.log('response', response.data);
-             user_response = response.data.bot_response;  
-             chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response + '</div>';
-             
-         })
-         .catch(function (error) {
-             console.error('Error sending message:', error);
-             // Handle error scenario here
-         });
-        }catch(e){
-            console.log(e)
-        }
-});
-
-
-</script>
+          var chatContent = document.querySelector('.chat-content');
+          var userSection = document.querySelector('.user-section');
+          chatContent.innerHTML += '<div class="text-right text-gray-900">' + message + '</div>';
+          userSection.innerHTML += '<span class="spinner"></span>';
+          var spinner  = document.querySelector('.spinner');
+          messageTag.value = ''; 
+          messageTag.disabled = true; 
+          axios.post(url, { message: message })
+               .then(function (response) {
+                  
+                  user_response = response.data.bot_response;  
+                  chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response.replace(/\n/g, '<br>') + '</div>';
+                  spinner.remove();
+                  messageTag.disabled = false;
+               })
+               .catch(function (error) { 
+                  messageTag.disabled = false
+               });
+      } catch(e) {
+          console.log(e);
+      }
+  });
+  </script>

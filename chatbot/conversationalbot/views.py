@@ -6,6 +6,7 @@ from django.contrib import messages
 import json
 
 
+
 def register(request):
     pass
 

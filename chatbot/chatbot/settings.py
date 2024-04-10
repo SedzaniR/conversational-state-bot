@@ -130,3 +130,7 @@ COMPRESS_ENABLED = True
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+HUGGING_FACE_TOKEN = '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'
+
+LOGIN_URL = 'conversationalbot:user_login'
