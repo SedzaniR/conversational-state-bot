@@ -5,3 +5,4 @@ openai==1.16.2
 Ipython
 django-compressor==4.4
 huggingface_hub
+coverage==7.4.4
