@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
 STATE = (
     ('greeting', 'greeting'),
@@ -34,6 +36,7 @@ class Log(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     user_input = models.TextField()
     bot_response = models.TextField()
+    state = models.CharField(max_length=100,choices=STATE, default='greeting', null=True)
     state = models.CharField(max_length=100,choices=STATE, default='greeting', null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
