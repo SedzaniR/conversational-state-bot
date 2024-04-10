@@ -132,3 +132,5 @@ COMPRESS_ENABLED = True
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 HUGGING_FACE_TOKEN = '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'
+
+LOGIN_URL = 'conversationalbot:user_login'

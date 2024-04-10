@@ -11,17 +11,8 @@ class UserChatApiView(APIView):
     
     permission_classes = [permissions.IsAuthenticated]
     
-    #1. Get user sessions/logs
-    def get(self,request,*args, **kwargs):
-        
-        """
-        Get all the user logs
-        """
-        todos = Log.objects.filter(user = request.user.id)
-        serializer = LogSerializer(todos, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
     
-    #2. create a new session or continue previous sessison
+    #1. create a new session or continue previous sessison
     
     def post(self,request, *args, **kwargs):
         """
