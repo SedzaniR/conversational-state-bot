@@ -42,12 +42,11 @@ class Log(models.Model):
 
 @receiver(post_save, sender=Log)
 def update_state(sender, instance, created, **kwargs):
-    print('post save signal')
-    print('this should be thetransition state', instance.state)
+
     user = UserMeta.objects.get(user=instance.user)
     user_step, created  = Step.objects.get_or_create(user_meta=user)
     user_step.transition_state(instance.state)
     
 @receiver(post_save, sender=User)
 def create_user_meta(sender, instance, created, **kwargs):
-    UserMeta.objects.create(user=instance)
+    UserMeta.objects.get_or_create(user=instance)

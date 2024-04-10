@@ -5,3 +5,5 @@ openai==1.16.2
 Ipython
 django-compressor==4.4
 huggingface_hub
+psycopg2-binary==2.9.1
+django-environ
