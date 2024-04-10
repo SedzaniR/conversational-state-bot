@@ -10,6 +10,7 @@ from conversationalbot.api import ConversationAssistant
 from django.test.utils import setup_test_environment
 from django.test import Client
 from django.urls import reverse
+from conversationalbot.utils import hugging_face_zero_shot_free
 
 class UserMetaTestCase(TestCase):
     def setUp(self):
@@ -44,7 +45,21 @@ class UserChatApiViewTest(TestCase):
         self.user = User.objects.create_user(
             username="test_user", password="password123"
         )
+        Log.objects.create(
+            user=self.user,
+            user_input="Test input",
+            bot_response="Test response",
+            state='greeting',
+        )
+        
+    def retrieve_user_logs(self):
+        client = APIClient()
+        client.force_authenticate(user=self.user)
 
+        response = client.get( "http://127.0.0.1:8000/conversationalbot/chat/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(len(response.data), 1)
+        
     def test_create_session_and_log(self):
         client = APIClient()
         client.force_authenticate(user=self.user)
@@ -58,6 +73,7 @@ class UserChatApiViewTest(TestCase):
         self.assertIn("user_input", response.data)
         self.assertIn("bot_response", response.data)
         self.assertIn("state", response.data)
+        self.assertIn("user", response.data)
 
 
 
@@ -100,3 +116,12 @@ class ConversationViewTestCase(TestCase):
         response = self.client.get(reverse("conversationalbot:conversation"))
         self.assertEqual(response.status_code, 302)
         self.assertRedirects(response, '/conversationalbot/login/?next=/conversationalbot/conversation/')
+
+class HuggingFaceTestCase(TestCase):
+    def test_hugging_face_zero_shot_free(self):
+        user_input = "How are you?"
+        label = hugging_face_zero_shot_free(user_input)
+        # Assuming the model returns one of the candidate labels
+        self.assertTrue(label == 'greeting' or label == 'question' or label == 'end' or label==None)
+
+   
