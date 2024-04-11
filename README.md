@@ -12,7 +12,7 @@ Converesational Stateful chat bot
 
 ### Installation Steps
 1. Clone the repository: `git clone <repository_url>`
-2. Navigate to the project directory: `cd <project_directory>`
+2. Navigate to the project directory: `cd <repo>/chatbot`
 3. Configure .env environmental variables for Database creation on project root
     - DATABASE_NAME=''
     - DATABASE_USER=''
