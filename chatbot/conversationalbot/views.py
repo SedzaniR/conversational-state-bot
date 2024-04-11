@@ -22,7 +22,6 @@ def user_login(request):
             return redirect("conversationalbot:conversation")
         else:
             messages.error(request, "Invalid username or password.")
-            return redirect("conversationalbot:user_login")
     return render(request, "registration/login.html")
 
 
@@ -32,7 +31,7 @@ def conversation(request):
     user = request.user
     if not user:
         return redirect("conversationalbot:user_login")
-    user_logs = list(user.log_set.all().values("user_input", "bot_response"))
+    user_logs = list(user.log_set.all().values("user_input", "bot_response","created_at"))
     context = {"user_logs": user_logs}
     return render(request, "chat.html", context=context)
 

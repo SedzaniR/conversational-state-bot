@@ -44,34 +44,32 @@
 <body >
  
 
-<div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-   
-    <div class="relative bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 w-1/2 h-1/2 mx-auto ">
-      <div class="">
-      
-        <div class="">
-          <div class="space-y-6 py-8 text-base leading-7 text-gray-600 chat-content">
-            {% for message in user_logs %}
-                <div class="text-right text-gray-900">{{ message.user_input|linebreaksbr }}</div>
-                <div class="text-left text-teal-500">{{ message.bot_response|linebreaksbr }}</div>
-            {% endfor %}
-          </div>
-          <div class="sticky-text-field mb-0 flex items-center user-section py-2">
-            <input class="border rounded-l-lg p-2 w-full" placeholder="Send Message" id="message-input">
-           
-            <div class="bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer ml-1" id='send-message'>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                </svg>
-            </div>
-          
-            
-        </div>
-        </div>
-      </div>
-    </div>
-  
-</div>
+  <div class="relative flex min-h-screen flex-col justify-center overflow-y-auto bg-gray-100 py-6 sm:py-12">
+    <h1 class="text-center pb-8 text-4xl font-bold text-teal-500">Let's Converse</h1>
+     <div class="relative bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 w-1/2 h-1/2 mx-auto rounded-lg">
+       <div class="">
+       
+         <div class="">
+           <div class="space-y-6 py-8 text-base leading-7 text-gray-600 chat-content">
+             {% for message in user_logs %}
+                 <div class="text-right text-gray-900 font-bold mb-2">{{ message.user_input|linebreaksbr }}</div>
+                 <div class="text-right text-xs text-gray-500">{{message.created_at}}</div>
+                 <div class="text-left text-teal-500">{{ message.bot_response|linebreaksbr }}</div>
+             {% endfor %}
+           </div>
+           <div class="sticky-text-field mb-0 flex items-center user-section py-2">
+             <input class="border rounded-l-lg p-2 w-full focus:outline-none focus:ring focus:border-teal-500" placeholder="Send Message" id="message-input">
+             <div class="bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer ml-1 flex items-center justify-center" id="send-message">
+                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
+                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                 </svg>
+             </div>
+           </div>
+         </div>
+       </div>
+     </div>
+ </div>
+ 
 
 
 
@@ -85,24 +83,26 @@
           var messageTag = document.getElementById('message-input');
           var message = messageTag.value;
           var url = '/api/chat/'; 
-          
-   
           axios.defaults.xsrfHeaderName = 'X-CSRFToken';
           axios.defaults.xsrfCookieName = 'csrftoken';
   
           var chatContent = document.querySelector('.chat-content');
           var userSection = document.querySelector('.user-section');
-          chatContent.innerHTML += '<div class="text-right text-gray-900">' + message + '</div>';
-          userSection.innerHTML += '<span class="spinner"></span>';
+
+          var now = new Date();
+          var timestamp = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+          chatContent.innerHTML += `<div  class="text-right text-gray-900 font-bold mb-2">${message}</div>
+                                    <div class="text-right text-xs text-gray-500">${timestamp}</div>`;
+          chatContent.innerHTML += '<div class="spinner"><span></span></div>';
           var spinner  = document.querySelector('.spinner');
+          console.log(spinner);
           messageTag.value = ''; 
           messageTag.disabled = true; 
           axios.post(url, { message: message })
                .then(function (response) {
-                  
+                  spinner.remove();
                   user_response = response.data.bot_response;  
                   chatContent.innerHTML += '<div class="text-left text-teal-500">' + user_response.replace(/\n/g, '<br>') + '</div>';
-                  spinner.remove();
                   messageTag.disabled = false;
                })
                .catch(function (error) { 
