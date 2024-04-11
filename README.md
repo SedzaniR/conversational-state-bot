@@ -17,6 +17,7 @@ Converesational Stateful chat bot
     - DATABASE_NAME=''
     - DATABASE_USER=''
     - DATABASE_PASSWORD=''
+    - OPENAI_API_KEY=''  
 4. Build Container: `docker-compose -f docker-compose.yml build`
 5. Run compose-up: `docker-compose up`
 6. Makemigrations: `docker-compose exec web python manage.py makemigrations`
