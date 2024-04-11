@@ -11,7 +11,7 @@ environ.Env.read_env()
 environ.Env.read_env(os.path.join(BASE_DIR, '.env'))
 
 SECRET_KEY = env('SECRET_KEY')
-OPEN_AI_KEY = env('OPEN_AI_KEY')
+OPEN_AI_KEY = env('OPENAI_API_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -66,14 +66,14 @@ WSGI_APPLICATION = 'chatbot.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.0/ref/settings/#databases
 
-DATABASES = {
+""" DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
+} """
 
-""" DATABASES = {    
+DATABASES = {    
    "default": {        
         "ENGINE": "django.db.backends.postgresql",
         "NAME": env('DATABASE_NAME'),
@@ -82,7 +82,7 @@ DATABASES = {
         "HOST": "db",
         "PORT": 5432,
     }
-} """
+}
 
 
 # Password validation
