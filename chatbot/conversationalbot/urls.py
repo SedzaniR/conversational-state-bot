@@ -5,6 +5,6 @@ from .api import (
 )
 urlpatterns = [
     path(r'login/',views.user_login,name='user_login'),
-    path(r'chat/', UserChatApiView.as_view()),
-    path(r'conversation/',views.conversation,name='conversation'),
+    path(r'api/chat/', UserChatApiView.as_view()),
+    path(r'',views.conversation,name='conversation'),
 ]

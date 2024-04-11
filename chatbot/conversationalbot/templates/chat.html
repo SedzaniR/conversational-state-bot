@@ -84,7 +84,7 @@
       try {
           var messageTag = document.getElementById('message-input');
           var message = messageTag.value;
-          var url = 'http://127.0.0.1:8000/conversationalbot/chat/'; 
+          var url = '/api/chat/'; 
           
    
           axios.defaults.xsrfHeaderName = 'X-CSRFToken';
