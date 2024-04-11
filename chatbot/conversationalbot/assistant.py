@@ -1,7 +1,7 @@
 from openai import OpenAI
 import openai
 from typing_extensions import override
-
+from django.conf import settings
 
 class ConversationAssistant:
     assistant_id = None
@@ -10,7 +10,7 @@ class ConversationAssistant:
 
     def __init__(self, assistant_id=None, thread_id=None, username=username):
         self.client = OpenAI(
-            api_key="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"
+            api_key=settings.OPENAI_API_KEY,
         )
         self.assistant_id = assistant_id
         self.thread_id = thread_id
