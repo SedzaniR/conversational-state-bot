@@ -22,11 +22,7 @@ services:
       POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
     ports:
       - '5432:5432'
-
-
- 
-#volumes:
-#  - postgres_data:/var/lib/postgresql/data/
-#volumes:
-#postgres_data:
-#for late
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+volumes:
+  postgres_data:

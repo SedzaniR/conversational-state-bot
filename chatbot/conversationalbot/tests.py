@@ -67,7 +67,7 @@ class UserChatApiViewTest(TestCase):
         data = {"message": "Test message"}
 
         response = client.post(
-            "http://127.0.0.1:8000/conversationalbot/chat/", data=data
+            "/api/chat/", data=data
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertIn("user_input", response.data)
@@ -115,7 +115,7 @@ class ConversationViewTestCase(TestCase):
      
         response = self.client.get(reverse("conversationalbot:conversation"))
         self.assertEqual(response.status_code, 302)
-        self.assertRedirects(response, '/conversationalbot/login/?next=/conversationalbot/conversation/')
+        self.assertRedirects(response, '/login/?next=/')
 
 class HuggingFaceTestCase(TestCase):
     def test_hugging_face_zero_shot_free(self):

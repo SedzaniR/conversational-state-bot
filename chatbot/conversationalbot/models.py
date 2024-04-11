@@ -19,8 +19,6 @@ class UserMeta(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     
 
-    def __str__(self):
-        return self.user
 
 
 class Step(models.Model):
