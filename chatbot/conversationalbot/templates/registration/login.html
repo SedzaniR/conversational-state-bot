@@ -1,6 +1,16 @@
 {% load static %}
  <style>
-
+  .main-div {
+    background: hsla(248, 21%, 15%, 1);
+  
+    background: linear-gradient(90deg, hsla(248, 21%, 15%, 1) 0%, hsla(250, 14%, 61%, 1) 100%);
+  
+    background: -moz-linear-gradient(90deg, hsla(248, 21%, 15%, 1) 0%, hsla(250, 14%, 61%, 1) 100%);
+  
+    background: -webkit-linear-gradient(90deg, hsla(248, 21%, 15%, 1) 0%, hsla(250, 14%, 61%, 1) 100%);
+  
+    filter: progid: DXImageTransform.Microsoft.gradient(startColorstr="#211F2F", endColorstr="#918CA9", GradientType=1);
+  }
 
       .chat-container {
         display: flex;
@@ -27,14 +37,21 @@
 
 </head>
  
-<body >
+<body  >
  
 
-<div class="relative flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12">
-   
-    <div class="relative bg-white px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 w-1/2 h-1/2 mx-auto ">
+<div class="relative  flex min-h-screen flex-col justify-center overflow-hidden bg-gray-50 py-6 sm:py-12 ">
+   <h1 class='text-center pb-8 '>Login</h1>
+    <h4></h4>
+    <div class="relative bg-whhite px-6 pt-10 pb-8 shadow-xl ring-1 ring-gray-900/5 w-1/2 h-1/2 mx-auto ">
       <div class="">
-      
+        {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
         <div class="">
           <div class="space-y-6 py-8 text-base leading-7 text-gray-600">
       
@@ -42,21 +59,18 @@
                
                   {% csrf_token %}
           
-                  <div class="mb-4">
-                      <label for="username" class="block font-medium">Username</label>
-                      <input type="tel" name="username" class="form-input mt-1 block w-full" id="username" placeholder="Username">
+                  <div class="max-w-md mx-auto p-6 bg-white rounded-lg shadow-lg">
+                    <div class="mb-4">
+                      <label for="username" class="block text-gray-700 font-medium mb-2">Username</label>
+                      <input type="tel" name="username" class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" id="username" placeholder="Username">
+                    </div>
+                    <div class="mb-4">
+                      <label for="password" class="block text-gray-700 font-medium mb-2">Password</label>
+                      <input type="password" name="password" class="form-input mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border-blue-500" id="password" placeholder="Password">
+                    </div>
+                    <button type="submit" class="btn bg-blue-500 text-white font-medium py-2 px-4 rounded-lg w-full transition duration-300 ease-in-out transform hover:bg-blue-600 hover:scale-105">Login</button>
                   </div>
-                  <div class="mb-4">
-                      <label for="password" class="block font-medium">Password</label>
-                      <input type="password" name="password" class="form-input mt-1 block w-full" id="password" placeholder="Password">
-                  </div>
-          
-                  {% comment %} <p class="mb-4"><a href="{% url "conversationalbot:forgot_password" %}" class="text-blue-500 hover:underline">Forgot password?</a></p>
-           {% endcomment %}
-                  <button type="submit" class="btn btn-primary w-full">Login</button>
-                {% comment %}   <div class="text-center mt-2"><a href="{% url "conversationalbot:register" %}" class="text-blue-500 hover:underline">Don't have an account? <u>Sign up here</u></a></div>
-               {% endcomment %}
-    
+                  
               </form>
           </div>
         
