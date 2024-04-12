@@ -29,7 +29,7 @@ Converesational Stateful chat bot
 
 ### Sending a Message
 ```bash
-curl -X POST -H "Content-Type: application/json" -d '{"message": "Hello"}' http://0.0.0.0:8000/api/send-message/
+curl -X POST -H "Content-Type: application/json" -d '{"message": "Hello"}' http://0.0.0.0:8000/api/chat/
 ```
 
 ### Retrieving Conversation History
