@@ -5,7 +5,7 @@ Converesational Stateful chat bot
 
 ### Prerequisites
 - Python 3.x
-- Django
+- Django 4.x
 - Postgres
 - Docker
 - docker-compose
@@ -14,6 +14,7 @@ Converesational Stateful chat bot
 1. Clone the repository: `git clone <repository_url>`
 2. Navigate to the project directory: `cd <repo>/chatbot`
 3. Configure .env environmental variables for Database creation on project root
+    - SECRET_KEY=''
     - DATABASE_NAME=''
     - DATABASE_USER=''
     - DATABASE_PASSWORD=''
