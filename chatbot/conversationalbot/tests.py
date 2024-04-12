@@ -10,8 +10,7 @@ from conversationalbot.api import ConversationAssistant
 from django.test.utils import setup_test_environment
 from django.test import Client
 from django.urls import reverse
-from conversationalbot.utils import hugging_face_zero_shot_free
-
+from conversationalbot.utils import hugging_face_zero_shot_free, rest_error_response_codes
 
 class UserMetaTestCase(TestCase):
     def setUp(self):
@@ -57,10 +56,16 @@ class UserChatApiViewTest(TestCase):
         client = APIClient()
         client.force_authenticate(user=self.user)
 
-        response = client.get("http://127.0.0.1:8000/conversationalbot/chat/")
+        response = client.get("/api/chat")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(len(response.data), 1)
-
+        
+    def test_authentication_required(self):
+        
+        self.client.logout()
+        response = self.client.get('/api/chat')
+        self.assertEqual(response.status_code, status.HTTP_301_MOVED_PERMANENTLY)
+        
     def test_create_session_and_log(self):
         client = APIClient()
         client.force_authenticate(user=self.user)
@@ -74,6 +79,7 @@ class UserChatApiViewTest(TestCase):
         self.assertIn("state", response.data)
         self.assertIn("user", response.data)
 
+    
 
 class UserLoginViewTestCase(TestCase):
     def setUp(self):
@@ -97,9 +103,7 @@ class UserLoginViewTestCase(TestCase):
             reverse("conversationalbot:user_login"),
             {"username": "invalid", "password": "invalid"},
         )
-
-        self.assertEqual(response.status_code, 302)  # Expecting redirect
-        self.assertRedirects(response, reverse("conversationalbot:user_login"))
+        self.assertContains(response, "Invalid username or password.")
 
 
 class ConversationViewTestCase(TestCase):
@@ -152,6 +156,25 @@ class AssistantTestCase(TestCase):
         assistant = ConversationAssistant(
             assistant_id="some gibberish", thread_id="hogwash", username="sedzani"
         )
-        code, message = assistant.send_message("Hello")
+        code, message = assistant.send_message("Hello", "greeting")
 
         self.assertEqual(code, 400)
+
+
+class TestErrorResponseCodes(TestCase):
+
+    def test_http_400_bad_request(self):
+        self.assertEqual(rest_error_response_codes(400), status.HTTP_400_BAD_REQUEST)
+
+    def test_http_404_not_found(self):
+        self.assertEqual(rest_error_response_codes(404), status.HTTP_404_NOT_FOUND)
+
+    def test_http_401_unauthorized(self):
+        self.assertEqual(rest_error_response_codes(401), status.HTTP_401_UNAUTHORIZED)
+
+    def test_http_500_internal_server_error(self):
+        self.assertEqual(rest_error_response_codes(500), status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    def test_other_error_codes(self):
+        self.assertEqual(rest_error_response_codes(403), status.HTTP_500_INTERNAL_SERVER_ERROR)
+        self.assertEqual(rest_error_response_codes(405), status.HTTP_500_INTERNAL_SERVER_ERROR)

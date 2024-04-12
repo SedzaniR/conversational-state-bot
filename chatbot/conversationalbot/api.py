@@ -8,7 +8,7 @@ from .assistant import ConversationAssistant
 from conversationalbot.utils import hugging_face_zero_shot_free, rest_error_response_codes
 from django.contrib.auth.models import User
 from rest_framework.authentication import SessionAuthentication, BasicAuthentication
-
+import openai
 
 class UserChatApiView(APIView):
 
@@ -34,12 +34,23 @@ class UserChatApiView(APIView):
         user_input_classification = hugging_face_zero_shot_free(user_input)
         user_meta = UserMeta.objects.get(user=request.user)
         if user_meta.assistant_id:
-            assistant = ConversationAssistant(
-                assistant_id=user_meta.assistant_id, thread_id=user_meta.thread_id,username=request.user.username
-            )
-
+            
+            try:
+                assistant = ConversationAssistant(
+                    assistant_id=user_meta.assistant_id, thread_id=user_meta.thread_id,username=request.user.username
+                )
+            except openai.AuthenticationError as e:
+                return Response({"error":str(e)},status=rest_error_response_codes(401))
+            
+            except Exception as e:
+                return Response({"error":str(e)},status=rest_error_response_codes(500))
         else:
-            assistant = ConversationAssistant()
+            try:
+                assistant = ConversationAssistant()
+            except openai.AuthenticationError as e:
+                return Response({"error":str(e)},status=rest_error_response_codes(401))
+            except Exception as e:
+                return Response({"error":str(e)},status=rest_error_response_codes(500))
             user_meta.assistant_id = assistant.assistant_id
             user_meta.thread_id = assistant.thread_id
             user_meta.save()
@@ -60,5 +71,5 @@ class UserChatApiView(APIView):
             serializer.save()
 
             return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        print('returning an error')
+        return Response({"error:":serializer.errors}, status=status.HTTP_400_BAD_REQUEST)

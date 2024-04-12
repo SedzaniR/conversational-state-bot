@@ -23,18 +23,20 @@ class ConversationAssistant:
 
     def create_assistant_for_user(self):
 
-        assistant = self.client.beta.assistants.create(
-            name="The Conversationalist",
-            instructions="You are a general conversationalist.Use your knowledge base to converse with the user. Do give long answers unless necessary."
-            ,
-            tools=[{"type": "retrieval"}],
-            model="gpt-3.5-turbo",
-        )
+        try:
+            assistant = self.client.beta.assistants.create(
+                name="The Conversationalist",
+                instructions="You are a general conversationalist.Use your knowledge base to converse with the user. Do give long answers unless necessary."
+                ,
+                tools=[{"type": "retrieval"}],
+                model="gpt-3.5-turbo",
+            )
 
-        thread = self.client.beta.threads.create()
+            thread = self.client.beta.threads.create()
 
-        return thread.id, assistant.id
-
+            return thread.id, assistant.id
+        except openai.AuthenticationError as e:
+            return 401, f"OpenAI API request failed due to authentication error: {e}"
     def send_message(self, message,user_input_classification):
 
         try:
@@ -62,7 +64,8 @@ class ConversationAssistant:
             return 401, f"OpenAI API request failed due to authentication error: {e}"
         except openai.NotFoundError as e:
             return 404, f"OpenAI API request failed due to not found error: {e}"
-
+        except Exception as e:
+            return 500, f"An error occurred: {e}"
         messages = self.client.beta.threads.messages.list(
             thread_id=self.thread_id,
         )

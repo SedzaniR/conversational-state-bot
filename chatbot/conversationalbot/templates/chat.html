@@ -58,7 +58,7 @@
              {% endfor %}
            </div>
            <div class="sticky-text-field mb-0 flex items-center user-section py-2">
-             <input class="border rounded-l-lg p-2 w-full focus:outline-none focus:ring focus:border-teal-500" placeholder="Send Message" id="message-input">
+             <input  required class="border rounded-l-lg p-2 w-full focus:outline-none focus:ring focus:border-teal-500" placeholder="Send Message" id="message-input">
              <div class="bg-teal-500 text-white p-2 rounded-r-lg cursor-pointer ml-1 flex items-center justify-center" id="send-message">
                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="h-6 w-6">
                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
@@ -82,6 +82,10 @@
       try {
           var messageTag = document.getElementById('message-input');
           var message = messageTag.value;
+
+          if (!message) {
+              alert('Please enter a message');
+          }
           var url = '/api/chat/'; 
           axios.defaults.xsrfHeaderName = 'X-CSRFToken';
           axios.defaults.xsrfCookieName = 'csrftoken';
@@ -97,7 +101,8 @@
           var spinner  = document.querySelector('.spinner');
           console.log(spinner);
           messageTag.value = ''; 
-          messageTag.disabled = true; 
+          messageTag.disabled = true;
+
           axios.post(url, { message: message })
                .then(function (response) {
                   spinner.remove();
@@ -106,7 +111,12 @@
                   messageTag.disabled = false;
                })
                .catch(function (error) { 
+                console.log('should be handing error ')
+                console.log(error);
                   messageTag.disabled = false
+                  spinner.remove();
+                  
+                  chatContent.innerHTML += '<div class="text-left text-red-500">' + error.response.data.error.replace(/\n/g, '<br>') + '</div>';
                });
       } catch(e) {
           console.log(e);
